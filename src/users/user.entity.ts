@@ -12,6 +12,9 @@ export class User {
   @Column()
   password: string;
 
+  @Column({ default: 'user' }) // "user" | "admin"
+  role: string;
+
   @OneToMany(() => Alert, (alert) => alert.user)
   alerts: Alert[];
 }
