@@ -1,15 +1,24 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { AlertsModule } from './alerts/alerts.module';
 import { JobsModule } from './jobs/jobs.module';
-import { DatabaseModule } from './database/database.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
-  imports: [UsersModule, AuthModule, AlertsModule, JobsModule, DatabaseModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ThrottlerModule.forRoot({
+      ttl: 60, // 60 seconds
+      limit: 10, // 10 requests max
+    }),
+    ConfigModule.forRoot({ isGlobal: true }),
+    DatabaseModule,
+    UsersModule,
+    AuthModule,
+    AlertsModule,
+    JobsModule,
+  ],
 })
 export class AppModule {}
