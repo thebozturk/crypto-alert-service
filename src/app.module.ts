@@ -9,10 +9,12 @@ import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
-    ThrottlerModule.forRoot({
-      ttl: 60, // 60 seconds
-      limit: 10, // 10 requests max
-    }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60, // seconds
+        limit: 10, // requests
+      },
+    ]),
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
     UsersModule,
