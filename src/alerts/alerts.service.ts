@@ -19,11 +19,17 @@ export class AlertsService {
     return this.alertRepository.save(alert);
   }
 
-  findUserAlerts(userId: string) {
-    return this.alertRepository.find({ where: { user: { id: userId } } });
-  }
-
   deleteAlert(alertId: string) {
     return this.alertRepository.delete(alertId);
+  }
+
+  async updateAlert(id: string, updateData: Partial<Alert>) {
+    await this.alertRepository.update(id, updateData);
+  }
+
+  async findUserAlerts(userId: string, status?: string) {
+    const where: any = { user: { id: userId } };
+    if (status) where.status = status;
+    return this.alertRepository.find({ where });
   }
 }

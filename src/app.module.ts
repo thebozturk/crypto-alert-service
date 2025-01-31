@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { AlertsModule } from './alerts/alerts.module';
 import { JobsModule } from './jobs/jobs.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
+    MailModule,
     UsersModule,
     AuthModule,
     AlertsModule,

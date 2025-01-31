@@ -36,4 +36,10 @@ export class AlertsController {
   deleteAlert(@Param('id') id: string) {
     return this.alertsService.deleteAlert(id);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('active')
+  findActiveAlerts(@Request() req) {
+    return this.alertsService.findUserAlerts(req.user.userId, 'active');
+  }
 }
