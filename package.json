@@ -29,7 +29,7 @@
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^10.0.0",
-    "@nestjs/swagger": "^7.1.10",
+    "@nestjs/swagger": "^7.4.2",
     "@nestjs/throttler": "^6.4.0",
     "@prisma/client": "^6.3.0",
     "axios": "^1.7.9",
@@ -46,6 +46,7 @@
     "pg": "^8.13.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^11.0.5",
     "winston": "^3.17.0"
   },

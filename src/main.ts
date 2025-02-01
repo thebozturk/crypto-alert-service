@@ -7,6 +7,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
   app.use(helmet()); // Set up security-related HTTP headers
   app.useGlobalFilters(new HttpExceptionFilter()); // Apply the global exception filter
   const logger = new WinstonLogger();

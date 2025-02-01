@@ -1,7 +1,7 @@
 import {
   Controller,
-  Post,
   Get,
+  Post,
   Delete,
   Body,
   Param,
@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { AlertsService } from './alerts.service';
 import { CreateAlertDto } from './dto/create-alert.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('Alerts')
 @ApiBearerAuth()
@@ -19,9 +19,10 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class AlertsController {
   constructor(private readonly alertsService: AlertsService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
-  async createAlert(@Request() req, @Body() createAlertDto: CreateAlertDto) {
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Create a new price alert' })
+  createAlert(@Request() req, @Body() createAlertDto: CreateAlertDto) {
     return this.alertsService.createAlert(
       req.user.userId,
       createAlertDto.coin,
@@ -29,21 +30,17 @@ export class AlertsController {
     );
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get all alerts for the authenticated user' })
   findUserAlerts(@Request() req) {
     return this.alertsService.findUserAlerts(req.user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Delete a specific alert' })
   deleteAlert(@Param('id') id: string) {
     return this.alertsService.deleteAlert(id);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('active')
-  findActiveAlerts(@Request() req) {
-    return this.alertsService.findActiveAlerts(req.user.userId);
   }
 }
