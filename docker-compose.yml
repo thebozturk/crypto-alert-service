@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:15
+    container_name: crypto_alert_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: crypto_alerts
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:alpine
+    container_name: crypto_alert_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+
+  app:
+    build: .
+    container_name: crypto_alert_app
+    restart: always
+    depends_on:
+      - database
+      - redis
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/crypto-alerts
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      COINGECKO_API: "https://api.coingecko.com/api/v3/simple/price"
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    command: ["sh", "-c", "npx prisma migrate deploy && npm run start:dev"]
+
+volumes:
+  pgdata:
+  redisdata:
