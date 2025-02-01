@@ -12,6 +12,7 @@ import { AlertsService } from './alerts.service';
 import { CreateAlertDto } from './dto/create-alert.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { RateLimitGuard } from '../common/guards/rate-limit.guard';
 
 @ApiTags('Alerts')
 @ApiBearerAuth()
@@ -20,6 +21,7 @@ export class AlertsController {
   constructor(private readonly alertsService: AlertsService) {}
 
   @Post()
+  @UseGuards(RateLimitGuard)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create a new price alert' })
   createAlert(@Request() req, @Body() createAlertDto: CreateAlertDto) {

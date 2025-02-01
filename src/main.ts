@@ -21,5 +21,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   await app.listen(3000);
+  console.log(`🚀 API running on: http://localhost:3000`);
+  console.log(
+    `📊 Prometheus metrics available at: http://localhost:3000/metrics`,
+  );
 }
 bootstrap();

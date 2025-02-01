@@ -8,11 +8,17 @@ import {
   SwaggerGetAllUsers,
   SwaggerGetProfile,
 } from '../decorators/swagger.decorator';
+import { AppLogger } from 'src/logger/logger.service';
+import { RateLimitGuard } from '../common/guards/rate-limit.guard';
 
 @SwaggerUsersController()
+@UseGuards(RateLimitGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly logger: AppLogger,
+  ) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
@@ -26,6 +32,7 @@ export class UsersController {
   @Get('me')
   @SwaggerGetProfile()
   async getProfile(@Request() req) {
+    this.logger.log(`User Profile Requested: ${req.user.sub}`);
     return this.usersService.findById(req.user.sub);
   }
 }

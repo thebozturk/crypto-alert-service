@@ -7,10 +7,14 @@ import { JobsModule } from './jobs/jobs.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { MailModule } from './mail/mail.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { LoggerModule } from './logger/logger.module';
+import { MonitoringModule } from './monitoring/monitoring.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    LoggerModule,
+    MonitoringModule,
     PrismaModule,
     ThrottlerModule.forRoot([
       {
