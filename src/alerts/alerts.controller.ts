@@ -21,8 +21,12 @@ export class AlertsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  createAlert(@Request() req, @Body() createAlertDto: CreateAlertDto) {
-    return this.alertsService.createAlert(req.user.userId, createAlertDto);
+  async createAlert(@Request() req, @Body() createAlertDto: CreateAlertDto) {
+    return this.alertsService.createAlert(
+      req.user.userId,
+      createAlertDto.coin,
+      createAlertDto.targetPrice,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -40,6 +44,6 @@ export class AlertsController {
   @UseGuards(JwtAuthGuard)
   @Get('active')
   findActiveAlerts(@Request() req) {
-    return this.alertsService.findUserAlerts(req.user.userId, 'active');
+    return this.alertsService.findActiveAlerts(req.user.userId);
   }
 }

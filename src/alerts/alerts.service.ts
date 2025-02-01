@@ -1,35 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Alert } from './alert.entity';
-import { CreateAlertDto } from './dto/create-alert.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { Alert } from '@prisma/client';
 
 @Injectable()
 export class AlertsService {
-  constructor(
-    @InjectRepository(Alert)
-    private readonly alertRepository: Repository<Alert>,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  createAlert(userId: string, createAlertDto: CreateAlertDto) {
-    const alert = this.alertRepository.create({
-      ...createAlertDto,
-      user: { id: userId },
+  async createAlert(
+    userId: string,
+    coin: string,
+    targetPrice: number,
+  ): Promise<Alert> {
+    return this.prisma.alert.create({
+      data: { userId, coin, targetPrice, status: 'active' },
     });
-    return this.alertRepository.save(alert);
   }
 
-  deleteAlert(alertId: string) {
-    return this.alertRepository.delete(alertId);
+  async findUserAlerts(userId: string): Promise<Alert[]> {
+    return this.prisma.alert.findMany({ where: { userId } });
   }
 
-  async updateAlert(id: string, updateData: Partial<Alert>) {
-    await this.alertRepository.update(id, updateData);
+  async updateAlert(alertId: string, data: Partial<Alert>): Promise<Alert> {
+    return this.prisma.alert.update({
+      where: { id: alertId },
+      data,
+    });
   }
 
-  async findUserAlerts(userId: string, status?: string) {
-    const where: any = { user: { id: userId } };
-    if (status) where.status = status;
-    return this.alertRepository.find({ where });
+  async deleteAlert(alertId: string): Promise<Alert> {
+    return this.prisma.alert.delete({ where: { id: alertId } });
+  }
+
+  findActiveAlerts(userId: string): Promise<Alert[]> {
+    return this.prisma.alert.findMany({
+      where: { userId, status: 'active' },
+    });
   }
 }
