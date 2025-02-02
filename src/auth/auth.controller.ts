@@ -1,4 +1,11 @@
-import { Controller, Post, Body, UseGuards, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  HttpCode,
+  ConflictException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -13,8 +20,19 @@ export class AuthController {
 
   @Post('register')
   @ApiOperation({ summary: 'User Registration' })
+  @HttpCode(201)
   async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto.email, registerDto.password);
+    try {
+      return await this.authService.register(
+        registerDto.email,
+        registerDto.password,
+      );
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      throw error;
+    }
   }
 
   @Post('login')

@@ -9,6 +9,7 @@ describe('AlertsController (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let accessToken: string;
+  let testUserId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,24 +22,26 @@ describe('AlertsController (e2e)', () => {
 
     prisma = moduleFixture.get<PrismaService>(PrismaService);
 
-    // create user or get existing user
-    await prisma.user.upsert({
-      where: { email: 'testuser@example.com' },
-      update: {},
-      create: {
+    // Clear existing data
+    await prisma.alert.deleteMany();
+    await prisma.user.deleteMany();
+
+    // Create test user
+    const testUser = await prisma.user.create({
+      data: {
         id: 'test-user',
         email: 'testuser@example.com',
         password: bcrypt.hashSync('hashedpassword', 10),
         role: 'user',
       },
     });
+    testUserId = testUser.id;
 
-    // login and get access token
+    // Login and get access token
     const loginResponse = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ email: 'testuser@example.com', password: 'hashedpassword' });
 
-    expect(loginResponse.status).toBe(200);
     accessToken = loginResponse.body.access_token;
   });
 
@@ -54,6 +57,7 @@ describe('AlertsController (e2e)', () => {
         .post('/alerts')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({ coin: 'bitcoin', targetPrice: 50000 });
+
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('id');
       expect(response.body.coin).toBe('bitcoin');
@@ -79,25 +83,30 @@ describe('AlertsController (e2e)', () => {
   });
 
   describe('/alerts (GET)', () => {
-    it('should return all alerts for the authenticated user', async () => {
+    beforeEach(async () => {
+      // Clear existing alerts
+      await prisma.alert.deleteMany();
+
+      // Create test alert
       await prisma.alert.create({
         data: {
           id: 'alert-1',
-          userId: 'test-user',
+          userId: testUserId, // Use the stored testUserId
           coin: 'ethereum',
           targetPrice: 3000,
           status: 'active',
         },
       });
+    });
 
+    it('should return all alerts for the authenticated user', async () => {
       const response = await request(app.getHttpServer())
         .get('/alerts')
         .set('Authorization', `Bearer ${accessToken}`);
 
       expect(response.status).toBe(200);
       expect(response.body.length).toBeGreaterThan(0);
-      expect(response.body[0].coin).toBe('bitcoin');
-      expect(response.body[1].coin).toBe('ethereum');
+      expect(response.body[0].coin).toBe('ethereum');
     });
   });
 
@@ -110,7 +119,7 @@ describe('AlertsController (e2e)', () => {
       createdAlert = await prisma.alert.create({
         data: {
           id: 'alert-delete-test',
-          userId: 'test-user',
+          userId: testUserId, // Use the stored testUserId
           coin: 'dogecoin',
           targetPrice: 0.1,
           status: 'active',

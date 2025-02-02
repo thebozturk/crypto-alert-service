@@ -7,7 +7,7 @@ describe('JwtAuthGuard', () => {
   let jwtService: JwtService;
 
   beforeEach(() => {
-    jwtService = new JwtService({ secret: 'test-secret' }); 
+    jwtService = new JwtService({ secret: 'test-secret' });
     jwtAuthGuard = new JwtAuthGuard(jwtService);
   });
 
