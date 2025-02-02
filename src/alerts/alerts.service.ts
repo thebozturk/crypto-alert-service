@@ -11,12 +11,20 @@ export class AlertsService {
     coin: string,
     targetPrice: number,
   ): Promise<Alert> {
+    if (!userId) {
+      throw new Error('User ID is required to create an alert.');
+    }
+
     return this.prisma.alert.create({
       data: { userId, coin, targetPrice, status: 'active' },
     });
   }
 
   async findUserAlerts(userId: string): Promise<Alert[]> {
+    if (!userId) {
+      throw new Error('User ID is required to fetch alerts.');
+    }
+
     return this.prisma.alert.findMany({ where: { userId } });
   }
 
@@ -28,12 +36,24 @@ export class AlertsService {
   }
 
   async deleteAlert(alertId: string): Promise<Alert> {
-    return this.prisma.alert.delete({ where: { id: alertId } });
+    const alert = await this.prisma.alert.findUnique({
+      where: { id: alertId },
+    });
+
+    if (!alert) {
+      throw new Error(`Alert with id ${alertId} not found.`);
+    }
+
+    return this.prisma.alert.delete({
+      where: { id: alert.id },
+    });
   }
 
-  findActiveAlerts(userId: string): Promise<Alert[]> {
-    return this.prisma.alert.findMany({
-      where: { userId, status: 'active' },
-    });
+  async findActiveAlerts(userId: string): Promise<Alert[]> {
+    if (!userId) {
+      throw new Error('User ID is required to fetch active alerts.');
+    }
+
+    return this.prisma.alert.findMany({ where: { userId, status: 'active' } });
   }
 }

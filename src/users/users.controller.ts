@@ -8,7 +8,7 @@ import {
   SwaggerGetAllUsers,
   SwaggerGetProfile,
 } from '../decorators/swagger.decorator';
-import { AppLogger } from 'src/logger/logger.service';
+import { AppLogger } from '../logger/logger.service';
 import { RateLimitGuard } from '../common/guards/rate-limit.guard';
 
 @SwaggerUsersController()

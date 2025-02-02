@@ -26,7 +26,7 @@ export class AlertsController {
   @ApiOperation({ summary: 'Create a new price alert' })
   createAlert(@Request() req, @Body() createAlertDto: CreateAlertDto) {
     return this.alertsService.createAlert(
-      req.user.userId,
+      req.user.sub,
       createAlertDto.coin,
       createAlertDto.targetPrice,
     );
@@ -36,7 +36,7 @@ export class AlertsController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all alerts for the authenticated user' })
   findUserAlerts(@Request() req) {
-    return this.alertsService.findUserAlerts(req.user.userId);
+    return this.alertsService.findUserAlerts(req.user.sub);
   }
 
   @Delete(':id')
