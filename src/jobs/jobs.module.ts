@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bull';
+import { Module, OnModuleInit } from '@nestjs/common';
+import { BullModule, InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 import { JobsProcessor } from './jobs.processor';
+import { JobsService } from './jobs.service';
 import { AlertsService } from '../alerts/alerts.service';
-import { MailService } from '../mail/mail.service';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
@@ -16,6 +17,18 @@ import { PrismaModule } from '../prisma/prisma.module';
       },
     }),
   ],
-  providers: [JobsProcessor, AlertsService, MailService],
+  providers: [JobsProcessor, JobsService, AlertsService],
+  exports: [JobsService],
 })
-export class JobsModule {}
+export class JobsModule implements OnModuleInit {
+  constructor(@InjectQueue('alert-queue') private readonly alertQueue: Queue) {}
+
+  async onModuleInit() {
+    try {
+      await this.alertQueue.client.ping();
+      console.log('✅ Successfully connected to Redis');
+    } catch (error) {
+      console.error('❌ Failed to connect to Redis:', error.message);
+    }
+  }
+}

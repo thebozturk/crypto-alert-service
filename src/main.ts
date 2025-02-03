@@ -2,28 +2,44 @@ import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import { WinstonLogger } from './common/logger/winston-logger.service';
+import { AppLogger } from './logger/logger.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { JobsService } from './jobs/jobs.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.enableCors();
-  app.use(helmet()); // Set up security-related HTTP headers
-  app.useGlobalFilters(new HttpExceptionFilter()); // Apply the global exception filter
-  const logger = new WinstonLogger();
-  app.useLogger(logger); // Use the WinstonLogger class as the global logger
-  const config = new DocumentBuilder()
-    .setTitle('Crypto Price Alert Service')
-    .setDescription('Crypto price tracking and alerting API')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
-  await app.listen(3000);
-  console.log(`🚀 API running on: http://localhost:3000`);
-  console.log(
-    `📊 Prometheus metrics available at: http://localhost:3000/metrics`,
-  );
+  try {
+    const app = await NestFactory.create(AppModule);
+    const logger = new AppLogger();
+
+    app.enableCors();
+    app.use(helmet());
+    app.useGlobalFilters(new HttpExceptionFilter());
+    app.useLogger(logger);
+
+    const config = new DocumentBuilder()
+      .setTitle('Crypto Price Alert Service')
+      .setDescription('Crypto price tracking and alerting API')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
+
+    await app.listen(3000);
+    console.log(`🚀 API running on: http://localhost:3000`);
+    console.log(
+      `📊 Prometheus metrics available at: http://localhost:3000/metrics`,
+    );
+
+    // Initialize the job service after the app is running
+    const jobsService = app.get(JobsService);
+    await jobsService.addAlertCheckJob();
+    console.log('✅ Alert check job scheduled successfully');
+  } catch (error) {
+    console.error('❌ Failed to start application:', error);
+    process.exit(1);
+  }
 }
+
 bootstrap();

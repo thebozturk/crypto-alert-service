@@ -5,7 +5,6 @@ import { AuthModule } from './auth/auth.module';
 import { AlertsModule } from './alerts/alerts.module';
 import { JobsModule } from './jobs/jobs.module';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { MailModule } from './mail/mail.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { LoggerModule } from './logger/logger.module';
 import { MonitoringModule } from './monitoring/monitoring.module';
@@ -22,7 +21,6 @@ import { MonitoringModule } from './monitoring/monitoring.module';
         limit: 10, // requests
       },
     ]),
-    MailModule,
     UsersModule,
     AuthModule,
     AlertsModule,
