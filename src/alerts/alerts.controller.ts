@@ -11,8 +11,15 @@ import {
 import { AlertsService } from './alerts.service';
 import { CreateAlertDto } from './dto/create-alert.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiBody,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { RateLimitGuard } from '../common/guards/rate-limit.guard';
+import { SwaggerExamples } from '../swagger/swagger-examples';
 
 @ApiTags('Alerts')
 @ApiBearerAuth()
@@ -24,6 +31,16 @@ export class AlertsController {
   @UseGuards(RateLimitGuard)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create a new price alert' })
+  @ApiBody({
+    schema: {
+      example: SwaggerExamples.createAlertRequest.example,
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Alert created successfully',
+    ...SwaggerExamples.createAlertResponse,
+  })
   createAlert(@Request() req, @Body() createAlertDto: CreateAlertDto) {
     return this.alertsService.createAlert(
       req.user.sub,
@@ -35,6 +52,11 @@ export class AlertsController {
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all alerts for the authenticated user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Alerts retrieved successfully',
+    ...SwaggerExamples.getAlertsResponse,
+  })
   findUserAlerts(@Request() req) {
     return this.alertsService.findUserAlerts(req.user.sub);
   }

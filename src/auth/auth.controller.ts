@@ -9,8 +9,9 @@ import {
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { RateLimitGuard } from '../common/guards/rate-limit.guard';
+import { SwaggerExamples } from '../swagger/swagger-examples';
 
 @ApiTags('Auth')
 @UseGuards(RateLimitGuard)
@@ -20,6 +21,16 @@ export class AuthController {
 
   @Post('register')
   @ApiOperation({ summary: 'User Registration' })
+  @ApiBody({
+    schema: {
+      example: SwaggerExamples.registerRequest.example,
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'User successfully registered',
+    ...SwaggerExamples.registerResponse,
+  })
   @HttpCode(201)
   async register(@Body() registerDto: RegisterDto) {
     try {
@@ -38,6 +49,16 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   @ApiOperation({ summary: 'User Login' })
+  @ApiBody({
+    schema: {
+      example: SwaggerExamples.loginRequest.example,
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'JWT token returned',
+    ...SwaggerExamples.loginResponse,
+  })
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto.email, loginDto.password);
   }

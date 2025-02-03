@@ -5,7 +5,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserResponse, UsersListResponse } from '../swagger/user.swagger';
+import { SwaggerExamples } from '../swagger/swagger-examples';
 
 export function SwaggerUsersController() {
   return applyDecorators(ApiTags('Users'), ApiBearerAuth());
@@ -17,7 +17,9 @@ export function SwaggerGetAllUsers() {
     ApiResponse({
       status: 200,
       description: 'List of all users',
-      type: UsersListResponse,
+      content: {
+        'application/json': SwaggerExamples.getUsersResponse,
+      },
     }),
   );
 }
@@ -28,7 +30,9 @@ export function SwaggerGetProfile() {
     ApiResponse({
       status: 200,
       description: 'User profile data',
-      type: UserResponse,
+      content: {
+        'application/json': SwaggerExamples.getUserProfileResponse,
+      },
     }),
   );
 }
