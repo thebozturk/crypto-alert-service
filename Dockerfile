@@ -17,5 +17,4 @@ COPY . .
 
 RUN npx prisma generate
 
-# 7. Uygulamayı başlat
 CMD ["npm", "run", "start:dev"]

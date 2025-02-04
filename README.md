@@ -70,7 +70,6 @@ API endpoints are documented using Swagger and available at `/api` when running 
 - Winston logger for structured logging
 - Correlation IDs for request tracking
 - Prometheus metrics at `/metrics`
-- Bull queue monitoring
 
 ## CI/CD Pipeline 🔄
 

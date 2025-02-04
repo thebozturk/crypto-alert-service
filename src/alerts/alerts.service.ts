@@ -26,15 +26,13 @@ export class AlertsService {
     try {
       const user = await this.prisma.user.findUnique({ where: { id: userId } });
       if (!user) {
-        return this.errorService.handleDatabaseError(
-          new Error('User does not exist'),
-        );
+        this.errorService.handleDatabaseError(new Error('User does not exist'));
       }
       return await this.prisma.alert.create({
         data: { userId, coin, targetPrice, status: 'active' },
       });
     } catch (error) {
-      return this.errorService.handleDatabaseError(error);
+      this.errorService.handleDatabaseError(error);
     }
   }
 
