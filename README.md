@@ -160,7 +160,7 @@ git clone git@github.com:thebozturk/crypto-alert-service.git
 cd crypto-price-alert-service
 ```
 
-53 Start the application:
+3. Start the application:
 
 ```bash
 npm run start:dev
