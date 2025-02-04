@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AlertsService } from '../../src/alerts/alerts.service';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { Alert } from '@prisma/client';
+import { ErrorService } from '../common/services/error.service';
 
 describe('AlertsService', () => {
   let alertsService: AlertsService;
@@ -9,9 +10,17 @@ describe('AlertsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AlertsService, PrismaService],
+      providers: [
+        AlertsService,
+        PrismaService,
+        {
+          provide: ErrorService,
+          useValue: {
+            handleDatabaseError: jest.fn(),
+          },
+        },
+      ],
     }).compile();
-
     alertsService = module.get<AlertsService>(AlertsService);
     prismaService = module.get<PrismaService>(PrismaService);
   });

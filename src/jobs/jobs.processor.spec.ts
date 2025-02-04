@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AlertsService } from '../alerts/alerts.service';
 import axios from 'axios';
 import { AppLogger } from '../logger/logger.service';
+import { ConfigService } from '@nestjs/config';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -29,6 +30,15 @@ describe('JobsProcessor', () => {
           provide: AlertsService,
           useValue: {
             updateAlert: jest.fn(),
+          },
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn().mockReturnValue({
+              apiUrl: 'https://api.coingecko.com/api/v3/simple/price',
+              timeout: 5000,
+            }),
           },
         },
       ],

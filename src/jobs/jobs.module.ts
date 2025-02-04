@@ -5,10 +5,12 @@ import { JobsProcessor } from './jobs.processor';
 import { JobsService } from './jobs.service';
 import { AlertsService } from '../alerts/alerts.service';
 import { PrismaModule } from '../prisma/prisma.module';
+import { ErrorModule } from '../common/error.module';
 
 @Module({
   imports: [
     PrismaModule,
+    ErrorModule,
     BullModule.registerQueue({
       name: 'alert-queue',
       redis: {

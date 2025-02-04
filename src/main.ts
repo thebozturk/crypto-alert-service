@@ -5,10 +5,12 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { AppLogger } from './logger/logger.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { JobsService } from './jobs/jobs.service';
+import { CorrelationMiddleware } from './common/middleware/correlation.middleware';
 
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
+    app.use(new CorrelationMiddleware().use);
     const logger = new AppLogger();
 
     app.enableCors();

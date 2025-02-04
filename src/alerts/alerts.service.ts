@@ -1,23 +1,41 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Alert } from '@prisma/client';
+import { ErrorService } from '../common/services/error.service';
 
 @Injectable()
 export class AlertsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly errorService: ErrorService,
+  ) {}
 
+  /**
+   * Creates a new price alert for a cryptocurrency
+   * @param userId - The ID of the user creating the alert
+   * @param coin - The cryptocurrency to monitor
+   * @param targetPrice - The price threshold to trigger the alert
+   * @returns Promise<Alert> - The created alert
+   * @throws BadRequestException if user doesn't exist
+   */
   async createAlert(
     userId: string,
     coin: string,
     targetPrice: number,
   ): Promise<Alert> {
-    if (!userId) {
-      throw new Error('User ID is required to create an alert.');
+    try {
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        return this.errorService.handleDatabaseError(
+          new Error('User does not exist'),
+        );
+      }
+      return await this.prisma.alert.create({
+        data: { userId, coin, targetPrice, status: 'active' },
+      });
+    } catch (error) {
+      return this.errorService.handleDatabaseError(error);
     }
-
-    return this.prisma.alert.create({
-      data: { userId, coin, targetPrice, status: 'active' },
-    });
   }
 
   async findUserAlerts(userId: string): Promise<Alert[]> {

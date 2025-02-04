@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Job } from 'bullmq';
 import { Process, Processor } from '@nestjs/bull';
 import { AppLogger } from '../logger/logger.service';
+import { ConfigService } from '@nestjs/config';
 
 @Processor('alert-queue')
 export class JobsProcessor {
@@ -12,10 +13,12 @@ export class JobsProcessor {
   constructor(
     private readonly prisma: PrismaService,
     private readonly alertsService: AlertsService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Process('check-alerts')
   async handleJob(_job: Job) {
+    const coinGeckoConfig = this.configService.get('coinGecko');
     this.logger.log('🔄 Job started: Checking active alerts...');
 
     try {
@@ -37,7 +40,8 @@ export class JobsProcessor {
           );
 
           const response = await axios.get(
-            `${process.env.COINGECKO_API}?ids=${alert.coin}&vs_currencies=usd`,
+            `${coinGeckoConfig.apiUrl}?ids=${alert.coin}&vs_currencies=usd`,
+            { timeout: coinGeckoConfig.timeout },
           );
 
           this.logger.log(`📊 API Response: ${JSON.stringify(response.data)}`);

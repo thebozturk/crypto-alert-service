@@ -1,73 +1,172 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Crypto Price Alert Service 🚀
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A robust cryptocurrency price monitoring service built with NestJS that allows users to set and receive alerts for crypto price movements.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features 🌟
 
-## Description
+- User authentication with JWT
+- Real-time price monitoring using CoinGecko API
+- Custom price alerts creation and management
+- Rate limiting and security measures
+- Comprehensive error handling and logging
+- Redis-based job queue for price checks
+- Prometheus metrics for monitoring
+- Swagger API documentation
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Tech Stack 💻
 
-## Installation
+- **Framework**: NestJS with TypeScript
+- **Database**: PostgreSQL with Prisma ORM
+- **Queue**: Bull/Redis for background jobs
+- **Authentication**: JWT
+- **API Documentation**: Swagger/OpenAPI
+- **Monitoring**: Prometheus metrics
+- **Testing**: Jest
+- **Security**: Helmet, CORS, Rate Limiting
+- **Logging**: Winston
+
+## Architecture 🏗️
+
+The application follows a modular architecture with the following key components:
+
+1. **Auth Module**: Handles user registration and authentication
+2. **Alerts Module**: Manages price alerts CRUD operations
+3. **Jobs Module**: Processes background price checks using Bull queue
+4. **Common Services**: Error handling, logging, and middleware
+
+### Key Design Decisions:
+
+- Used Redis for job queue to handle price checks asynchronously
+- Implemented correlation IDs for request tracking
+- Added rate limiting to prevent API abuse
+- Used Prisma for type-safe database operations
+- Implemented comprehensive error handling and logging
+
+## API Documentation 📚
+
+API endpoints are documented using Swagger and available at `/api` when running the application.
+
+### Main Endpoints:
+
+- `POST /auth/register` - User registration
+- `POST /auth/login` - User authentication
+- `POST /alerts` - Create price alert
+- `GET /alerts` - Get user's alerts
+- `DELETE /alerts/:id` - Delete specific alert
+
+
+## Security Measures 🔒
+
+- JWT authentication
+- Request rate limiting
+- Helmet security headers
+- CORS protection
+- Input validation
+- Error sanitization
+- Secure password hashing
+
+## Monitoring and Logging 📊
+
+- Winston logger for structured logging
+- Correlation IDs for request tracking
+- Prometheus metrics at `/metrics`
+- Bull queue monitoring
+
+## CI/CD Pipeline 🔄
+
+GitHub Actions workflow includes:
+- Code linting
+- Unit and E2E tests
+- Docker image building
+- Automated deployments
+
+## Performance Optimizations ⚡
+
+- Database query optimization
+- Background job processing
+- Rate limiting for API protection
+
+## Error Handling 🚫
+
+Comprehensive error handling includes:
+- Global exception filter
+- Custom error types
+- Structured error responses
+- Detailed logging
+
+## Future Improvements 🔮
+
+- WebSocket support for real-time price updates
+- Email notifications for triggered alerts
+- Additional cryptocurrency exchange APIs
+- Enhanced monitoring and alerting
+- User preferences and settings
+
+## Setup Instructions 🚀
+
+### Prerequisites:
+- Node.js 18+
+- PostgreSQL
+- Redis
+
+# Docker Setup Guide 🐳
+
+## Prerequisites
+
+- Docker
+- Docker Compose
+- Git
+
+## Steps
+
+1. Clone the repository:
 
 ```bash
-$ npm install
+git clone git@github.com:thebozturk/crypto-alert-service.git
 ```
 
-## Running the app
+2. Navigate to the project directory:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cd crypto-price-alert-service
 ```
 
-## Test
+3. Start the application:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose up -v
 ```
 
-## Support
+4. Access the application at `http://localhost:3000`
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+5. Access the Swagger API documentation at `http://localhost:3000/api`
 
-## Stay in touch
+6. To stop the application, run:
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+docker-compose down -v
+```
 
-## License
+# Manual Setup Guide 🛠
 
-Nest is [MIT licensed](LICENSE).
+1. Clone the repository:
+
+```bash
+git clone git@github.com:thebozturk/crypto-alert-service.git
+```
+
+2. Navigate to the project directory:
+
+```bash
+cd crypto-price-alert-service
+```
+
+53 Start the application:
+
+```bash
+npm run start:dev
+```
+
+# Example Logs 📝
+
+<img width="999" alt="Screenshot 2025-02-04 at 03 34 05" src="https://github.com/user-attachments/assets/21884991-2db0-4dad-8df5-f3910b80fa77" />
