@@ -54,7 +54,6 @@ API endpoints are documented using Swagger and available at `/api` when running 
 - `GET /alerts` - Get user's alerts
 - `DELETE /alerts/:id` - Delete specific alert
 
-
 ## Security Measures 🔒
 
 - JWT authentication
@@ -74,6 +73,7 @@ API endpoints are documented using Swagger and available at `/api` when running 
 ## CI/CD Pipeline 🔄
 
 GitHub Actions workflow includes:
+
 - Code linting
 - Unit and E2E tests
 - Docker image building
@@ -88,6 +88,7 @@ GitHub Actions workflow includes:
 ## Error Handling 🚫
 
 Comprehensive error handling includes:
+
 - Global exception filter
 - Custom error types
 - Structured error responses
@@ -104,6 +105,7 @@ Comprehensive error handling includes:
 ## Setup Instructions 🚀
 
 ### Prerequisites:
+
 - Node.js 18+
 - PostgreSQL
 - Redis
@@ -168,4 +170,4 @@ npm run start:dev
 
 # Example Logs 📝
 
-<img width="999" alt="Screenshot 2025-02-04 at 03 34 05" src="https://github.com/user-attachments/assets/21884991-2db0-4dad-8df5-f3910b80fa77" />
+<img width="999" alt="Image" src="https://i.imghippo.com/files/ecC7926Lg.png" />
